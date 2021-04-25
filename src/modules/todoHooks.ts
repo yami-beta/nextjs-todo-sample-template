@@ -2,7 +2,7 @@ import { useCallback, useMemo } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { v4 as uuidv4 } from "uuid";
 import { RootState } from "../store";
-import { addTodo, deleteTodo, Todo } from "./todoSlice";
+import { addTodo, deleteTodo, editTodo, Todo } from "./todoSlice";
 
 export const useTodos = () => {
   const todoIds = useSelector((state: RootState) => state.todo.todoIds);
@@ -39,6 +39,19 @@ export const useDeleteTodo = () => {
   const fn = useCallback(
     (id: string) => {
       dispatch(deleteTodo({ id }));
+    },
+    [dispatch]
+  );
+
+  return fn;
+};
+
+export const useEditTodo = () => {
+  const dispatch = useDispatch();
+
+  const fn = useCallback(
+    (todo: Todo) => {
+      dispatch(editTodo(todo));
     },
     [dispatch]
   );

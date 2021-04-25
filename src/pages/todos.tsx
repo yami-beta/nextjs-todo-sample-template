@@ -12,14 +12,25 @@ import DeleteIcon from "@material-ui/icons/Delete";
 import EditIcon from "@material-ui/icons/Edit";
 import { NextPage } from "next";
 import { useState } from "react";
+import { EditTodoDialog } from "../components/EditTodoDialog";
 import { NewTodoDialog } from "../components/NewTodoDialog";
-import { useDeleteTodo, useTodos } from "../modules/todoHooks";
+import { useDeleteTodo, useEditTodo, useTodos } from "../modules/todoHooks";
+import { Todo } from "../modules/todoSlice";
 
 const TodosPage: NextPage<{}> = () => {
   const [todos] = useTodos();
   const deleteTodo = useDeleteTodo();
 
   const [show, setShow] = useState(false);
+
+  const [editTodoState, setEditTodoState] = useState<{
+    show: boolean;
+    todo?: Todo;
+  }>({
+    show: false,
+  });
+
+  const editTodo = useEditTodo();
 
   return (
     <div>
@@ -40,11 +51,27 @@ const TodosPage: NextPage<{}> = () => {
           {todos.map((todo) => (
             <ListItem dense button key={todo.id}>
               <ListItemIcon>
-                <Checkbox checked={todo.completed} disableRipple />
+                <Checkbox
+                  checked={todo.completed}
+                  disableRipple
+                  onChange={(_, checked) => {
+                    editTodo({
+                      ...todo,
+                      completed: checked,
+                    });
+                  }}
+                />
               </ListItemIcon>
               <ListItemText primary={todo.text} />
               <ListItemSecondaryAction>
-                <IconButton onClick={() => alert("未実装")}>
+                <IconButton
+                  onClick={() => {
+                    setEditTodoState({
+                      show: true,
+                      todo: todo,
+                    });
+                  }}
+                >
                   <EditIcon />
                 </IconButton>
                 <IconButton
@@ -66,6 +93,21 @@ const TodosPage: NextPage<{}> = () => {
           setShow(false);
         }}
       />
+
+      {editTodoState.todo && (
+        <EditTodoDialog
+          open={editTodoState.show}
+          handleClose={() => {
+            setEditTodoState((prev) => {
+              return {
+                ...prev,
+                show: false,
+              };
+            });
+          }}
+          todo={editTodoState.todo}
+        />
+      )}
     </div>
   );
 };
