@@ -1,4 +1,9 @@
-import { addTodo, todoInitialState, todoReducer } from "./todoSlice";
+import {
+  addTodo,
+  deleteTodo,
+  todoInitialState,
+  todoReducer,
+} from "./todoSlice";
 
 describe("todoSlice", () => {
   test("Todoの追加のテスト", () => {
@@ -11,5 +16,23 @@ describe("todoSlice", () => {
   });
 
   test.todo("Todoの編集のテスト");
-  test.todo("Todoの削除のテスト");
+
+  test("Todoの削除のテスト", () => {
+    const todo = { id: "test", text: "test text", completed: false };
+
+    const result = todoReducer(
+      {
+        ...todoInitialState,
+        todoIds: [...todoInitialState.todoIds, todo.id],
+        entities: {
+          ...todoInitialState.entities,
+          [todo.id]: todo,
+        },
+      },
+      deleteTodo({ id: todo.id })
+    );
+
+    expect(result.todoIds.length).toBe(3);
+    expect(result.entities[todo.id]).toBeUndefined();
+  });
 });

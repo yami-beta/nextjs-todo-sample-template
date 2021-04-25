@@ -13,10 +13,11 @@ import EditIcon from "@material-ui/icons/Edit";
 import { NextPage } from "next";
 import { useState } from "react";
 import { NewTodoDialog } from "../components/NewTodoDialog";
-import { useTodos } from "../modules/todoHooks";
+import { useDeleteTodo, useTodos } from "../modules/todoHooks";
 
 const TodosPage: NextPage<{}> = () => {
   const [todos] = useTodos();
+  const deleteTodo = useDeleteTodo();
 
   const [show, setShow] = useState(false);
 
@@ -46,7 +47,11 @@ const TodosPage: NextPage<{}> = () => {
                 <IconButton onClick={() => alert("未実装")}>
                   <EditIcon />
                 </IconButton>
-                <IconButton onClick={() => alert("未実装")}>
+                <IconButton
+                  onClick={() => {
+                    deleteTodo(todo.id);
+                  }}
+                >
                   <DeleteIcon />
                 </IconButton>
               </ListItemSecondaryAction>
