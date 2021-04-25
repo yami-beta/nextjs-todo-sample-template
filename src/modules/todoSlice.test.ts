@@ -6,7 +6,8 @@ describe("todoSlice", () => {
 
     const result = todoReducer(todoInitialState, addTodo(todo));
 
-    expect(result.todos.length).toBe(4);
+    expect(result.todoIds.length).toBe(4);
+    expect(result.entities[todo.id]).toEqual(todo);
   });
 
   test.todo("Todoの編集のテスト");
